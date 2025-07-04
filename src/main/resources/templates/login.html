@@ -14,6 +14,7 @@
 <a th:href="@{/oauth2/authorization/google}">Login with Google</a>
 <br>
 <a th:href="@{/register}">Register</a>
-<p th:if="${param.error}" style="color: red">Login failed</p>
+<p th:if="${param.incorrect_username_or_password}" style="color: red">Incorrect username or password</p>
+<p th:if="${param.unknown_error}" style="color: red">Unknown error</p>
 </body>
 </html>

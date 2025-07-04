@@ -4,8 +4,12 @@ import com.practice.authentication.security.service.OAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -49,6 +53,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             .and().formLogin()
                 .loginPage(LOGIN_PAGE)
+                .failureHandler(loginFailureHandler())
                 .defaultSuccessUrl(LOGIN_SUCCESS_URL, true).permitAll()
             .and().logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher(LOGOUT_URL))
@@ -63,6 +68,20 @@ public class SecurityConfig {
                 .userInfoEndpoint().userService(oAuth2UserService);
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler loginFailureHandler() {
+        return (request, response, exception) -> {
+            String error;
+            if (exception instanceof BadCredentialsException
+                    || exception instanceof UsernameNotFoundException) {
+                error = "incorrect_username_or_password";
+            } else {
+                error = "unknown_error";
+            }
+            response.sendRedirect("/login?" + error);
+        };
     }
 
     @Bean
