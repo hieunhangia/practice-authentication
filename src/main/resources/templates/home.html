@@ -5,24 +5,21 @@
 </head>
 <body>
 <h2 th:text="'Welcome ' + ${#authentication.name} + '!'">Welcome</h2>
-<br>
-<h2 th:if="${#authentication.principal.email != null}"
+<h2 th:if="${#authentication.principal.email}"
     th:text="'Email: ' + ${#authentication.principal.email}">
 </h2>
 <h2>Authorities</h2>
 <ul th:each="i : ${#authentication.authorities}">
     <li th:text="${i.authority}"></li>
 </ul>
-<a th:if="${#authentication.principal.password != null}" th:href="@{/user/change-password}">
+<a th:if="${#authentication.principal.password}" th:href="@{/user/change-password}">
     Change password
 </a>
 <br>
 <a th:if="${#authentication.principal.email == null}" th:href="@{/oauth2/authorization/google}">
     Link to Google
 </a>
-<br>
 <h2 th:text="${message}"></h2>
-<br>
 <a th:href="@{/logout}">Logout</a>
 </body>
 </html>
