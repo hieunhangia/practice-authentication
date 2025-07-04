@@ -1,11 +1,9 @@
 package com.practice.authentication.controller;
 
 import com.practice.authentication.dto.RegisterRequest;
-import com.practice.authentication.security.entity.UserDetailsCustom;
+import com.practice.authentication.security.utilities.SecurityUtils;
 import com.practice.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class AuthController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SecurityUtils securityUtils;
 
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
@@ -36,9 +37,7 @@ public class AuthController {
 
     @GetMapping("/login")
     public String showLoginForm() {
-        Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
-        if (currentAuth != null && currentAuth.isAuthenticated()
-                && currentAuth.getPrincipal() instanceof UserDetailsCustom currentUser){
+        if (securityUtils.getCurrentUser() != null){
             return "redirect:/home";
         }
         return "login";

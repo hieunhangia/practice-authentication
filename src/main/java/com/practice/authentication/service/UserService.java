@@ -2,7 +2,6 @@ package com.practice.authentication.service;
 
 import com.practice.authentication.dto.ChangePasswordRequest;
 import com.practice.authentication.dto.RegisterRequest;
-import com.practice.authentication.entity.Role;
 import com.practice.authentication.entity.User;
 import com.practice.authentication.repository.RoleRepository;
 import com.practice.authentication.repository.UserRepository;
@@ -21,6 +20,8 @@ public class UserService {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RoleService roleService;
 
     public void register(RegisterRequest request) {
         if (!request.getConfirmPassword().equals(request.getPassword()))
@@ -30,7 +31,7 @@ public class UserService {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRoles(Set.of(getDefaultRole()));
+        user.setRoles(Set.of(roleService.getDefaultRole()));
         userRepository.save(user);
     }
 
@@ -43,15 +44,6 @@ public class UserService {
             throw new RuntimeException("Incorrect old password");
         user.setPassword(passwordEncoder.encode(req.getNewPassword()));
         userRepository.save(user);
-    }
-
-    private Role getDefaultRole(){
-        return roleRepository.findByName("User")
-                .orElseGet(() -> {
-                    Role roleUser = new Role("User");
-                    roleRepository.save(roleUser);
-                    return roleUser;
-                });
     }
 
 }
