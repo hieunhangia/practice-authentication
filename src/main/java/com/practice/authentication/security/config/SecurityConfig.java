@@ -2,6 +2,7 @@ package com.practice.authentication.security.config;
 
 import com.practice.authentication.security.service.OAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,6 +17,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Value("${remember-me.key}")
+    private String rememberMeKey;
 
     // Đường dẫn không yêu cầu đăng nhập
     private static final String[] PUBLIC_MATCHERS = {
@@ -33,9 +37,6 @@ public class SecurityConfig {
 
     // Trang đích sau khi logout
     private static final String LOGOUT_SUCCESS_URL = "/login?logout";
-
-    // Khóa bí mật cho remember-me
-    private static final String REMEMBER_ME_KEY = "secret key asfkjakejlcs";
 
     // Thời gian remember-me (s)
     private static final int REMEMBER_ME_VALIDITY = 36;
@@ -57,7 +58,7 @@ public class SecurityConfig {
                 .logoutRequestMatcher(new AntPathRequestMatcher(LOGOUT_URL))
                 .logoutSuccessUrl(LOGOUT_SUCCESS_URL).permitAll()
             .and().rememberMe()
-                .key(REMEMBER_ME_KEY)
+                .key(rememberMeKey)
                 .tokenValiditySeconds(REMEMBER_ME_VALIDITY)
             .and().oauth2Login()
                 .loginPage(LOGIN_PAGE)
