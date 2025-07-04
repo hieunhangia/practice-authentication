@@ -19,7 +19,8 @@
 <a th:if="${#authentication.principal.email == null}" th:href="@{/oauth2/authorization/google}">
     Link to Google
 </a>
-<h2 th:text="${message}"></h2>
+<br>
+<h2 th:if="${param.account_already_linked}">Google account already linked to another user</h2>
 <a th:href="@{/logout}">Logout</a>
 </body>
 </html>

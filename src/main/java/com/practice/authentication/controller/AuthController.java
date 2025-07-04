@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class AuthController {
@@ -38,10 +37,7 @@ public class AuthController {
     }
 
     @GetMapping("/home")
-    public String home(@RequestParam(required = false) String error, Model model) {
-        if ("account_already_linked".equals(error)) {
-            model.addAttribute("message", "Google account already linked to another user");
-        }
+    public String home(Model model) {
         return "home";
     }
 }

@@ -57,9 +57,9 @@ public class SecurityConfig {
                 .key(REMEMBER_ME_KEY)
                 .tokenValiditySeconds(REMEMBER_ME_VALIDITY)
             .and().oauth2Login()
-                .loginPage("/login")
+                .loginPage(LOGIN_PAGE)
                 .failureHandler(oauth2FailureHandler())
-                .defaultSuccessUrl("/home", true)
+                .defaultSuccessUrl(LOGIN_SUCCESS_URL, true)
                 .userInfoEndpoint().userService(oAuth2UserService);
 
         return http.build();
@@ -71,10 +71,10 @@ public class SecurityConfig {
             if (exception instanceof OAuth2AuthenticationException authEx) {
                 String error = authEx.getError().getErrorCode();
                 if (error.equals("account_already_linked")) {
-                    response.sendRedirect("/home?error=account_already_linked");
-                } else {
-                    response.sendRedirect("/login?error");
+                    response.sendRedirect("/home?account_already_linked");
                 }
+            } else {
+                response.sendRedirect("/login?error");
             }
         };
     }
